@@ -593,44 +593,21 @@ select option { background: var(--s2); }
   font-size: 11px; color: #fff;
 }
 
-/* ── LOGIN SCREEN ── */
-.login-screen {
-  position: fixed; inset: 0; background: var(--bg);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 9999; padding: 30px;
-}
-.login-screen.hide { display: none; }
-.login-logo { font-size: 56px; margin-bottom: 12px; }
-.login-title { font-size: 28px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
-.login-sub { font-size: 14px; color: var(--t2); margin-bottom: 44px; text-align: center; line-height: 1.6; }
-.btn-google {
-  display: flex; align-items: center; gap: 12px;
-  background: #fff; border: 1.5px solid var(--border);
-  border-radius: 14px; padding: 15px 28px;
-  font-family: 'Inter', sans-serif; font-size: 15px;
-  font-weight: 700; color: #3c4043; cursor: pointer;
-  box-shadow: 0 2px 16px rgba(224,92,138,0.15);
-  width: 100%; max-width: 300px; justify-content: center;
-  transition: all 0.2s;
-}
-.btn-google:active { transform: scale(0.97); }
-.btn-google img { width: 20px; height: 20px; }
-.login-note { font-size: 11px; color: var(--t3); margin-top: 20px; text-align: center; line-height: 1.5; }
-.login-err { display: none; margin-top: 14px; color: var(--red); font-size: 12px; text-align: center; background: rgba(248,81,73,0.1); padding: 10px 14px; border-radius: 8px; max-width: 300px; }
-/* User avatar */
-.user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--border); }
-.user-menu {
-  position: fixed; top: calc(52px + var(--safe-t)); right: 10px;
-  background: var(--s1); border: 1px solid var(--border);
-  border-radius: 12px; padding: 8px; z-index: 500;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-  display: none; min-width: 210px;
-}
-.user-menu.on { display: block; }
-.um-name { font-size: 13px; font-weight: 700; padding: 6px 10px; color: var(--text); }
-.um-email { font-size: 11px; color: var(--t2); padding: 0 10px 8px; border-bottom: 1px solid var(--border); }
-.btn-logout { width: 100%; margin-top: 6px; padding: 10px; background: rgba(248,81,73,0.1); border: none; border-radius: 8px; color: var(--red); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;padding:30px}
+.login-screen.hide{display:none}
+.login-logo{font-size:56px;margin-bottom:12px}
+.login-title{font-size:28px;font-weight:900;color:var(--text);margin-bottom:6px}
+.login-sub{font-size:14px;color:var(--t2);margin-bottom:44px;text-align:center;line-height:1.6}
+.btn-google{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:15px 28px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#3c4043;cursor:pointer;box-shadow:0 2px 16px rgba(224,92,138,0.15);width:100%;max-width:300px;justify-content:center}
+.btn-google img{width:20px;height:20px}
+.login-note{font-size:11px;color:var(--t3);margin-top:20px;text-align:center;line-height:1.5}
+.user-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;cursor:pointer;border:2px solid var(--border)}
+.user-menu{position:fixed;top:calc(52px + var(--safe-t));right:10px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:8px;z-index:500;box-shadow:0 4px 24px rgba(0,0,0,0.12);display:none;min-width:210px}
+.user-menu.on{display:block}
+.um-name{font-size:13px;font-weight:700;padding:6px 10px;color:var(--text)}
+.um-email{font-size:11px;color:var(--t2);padding:0 10px 8px;border-bottom:1px solid var(--border)}
+.btn-logout{width:100%;margin-top:6px;padding:10px;background:rgba(248,81,73,0.1);border:none;border-radius:8px;color:var(--red);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -638,7 +615,6 @@ select option { background: var(--s2); }
 </head>
 
 <body>
-<!-- LOGIN -->
 <div class="login-screen" id="login-screen">
   <div class="login-logo">🌸</div>
   <div class="login-title">MonAgenda</div>
@@ -648,13 +624,11 @@ select option { background: var(--s2); }
     Continuer avec Google
   </button>
   <div class="login-note">Tes données sont privées.<br>Personne d'autre ne voit ton agenda.</div>
-  <div class="login-err" id="login-err"></div>
 </div>
-<!-- USER MENU -->
 <div class="user-menu" id="user-menu">
   <div class="um-name" id="um-name"></div>
   <div class="um-email" id="um-email"></div>
-  <button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button>
+  <button class="btn-logout" onclick="doLogout()">🚪 Se déconnecter</button>
 </div>
 <div id="app">
 
@@ -674,7 +648,7 @@ select option { background: var(--s2); }
       <div class="hdr-clock">
         <div class="clock-time"><span id="cl-hm"></span><span class="clock-sec" id="cl-s"></span></div>
         <div class="clock-date" id="cl-date"></div>
-        <img id="user-avatar" class="user-avatar" src="" alt="" style="display:none;margin-top:2px" onclick="toggleUserMenu()">
+        <img id="user-avatar" class="user-avatar" src="" alt="" style="display:none;margin-top:2px" onclick="toggleUM()">
         <div id="sync-status" style="font-size:10px;color:var(--t2);margin-top:2px;text-align:right;transition:opacity 1s">🔄 Connexion...</div>
       </div>
     </div>
@@ -858,8 +832,7 @@ function m2t(m) {
   return `${p2(Math.floor(m / 60))}:${p2(m % 60)}`;
 }
 function durStr(startMin, endMin) {
-  let d = endMin - startMin;
-  if (d <= 0) d += 1440;
+  const d = endMin - startMin;
   if (d <= 0) return '';
   const h = Math.floor(d / 60), m = d % 60;
   if (h && m) return `${h}h${m}min`;
@@ -892,7 +865,7 @@ function dateLbl(ds) {
 }
 
 // ═══════════════════════════════════════════════
-// FIREBASE CONFIG
+// FIREBASE CONFIG — remplace par ta propre config !
 // ═══════════════════════════════════════════════
 const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyAQOxCA2xd2MvCUTEFteZEuuDO8KiDnYDg",
@@ -905,11 +878,13 @@ const FIREBASE_CONFIG = {
 };
 
 // ═══════════════════════════════════════════════
-// DATABASE + AUTH
+// DATABASE
 // ═══════════════════════════════════════════════
 let DB = { tasks: [], reminders: [], lastOpen: '' };
-let _fbDb = null, _fbAuth = null, _fbReady = false;
-let _currentUser = null, _fbListener = null;
+let _fbDb = null;
+let _fbReady = false;
+
+let _fbAuth = null, _currentUser = null, _fbListener = null;
 
 function fbInit() {
   try {
@@ -920,11 +895,52 @@ function fbInit() {
     _fbAuth.onAuthStateChanged(user => {
       if (user) {
         _currentUser = user;
-        showApp(user);
-        startDbListener(user.uid);
+        // Show app, hide login
+        document.getElementById('login-screen').classList.add('hide');
+        document.getElementById('app').style.display = '';
+        const av = document.getElementById('user-avatar');
+        if (user.photoURL) { av.src = user.photoURL; av.style.display = 'block'; }
+        document.getElementById('um-name').textContent  = user.displayName || '';
+        document.getElementById('um-email').textContent = user.email || '';
+        // Start listening to user's data
+        if (_fbListener) { _fbListener.off(); }
+        const ref = _fbDb.ref('users/' + user.uid);
+        _fbListener = ref;
+        // Migrate old shared data if user has none
+        ref.once('value', snap => {
+          if (!snap.val()) {
+            const old = _fbDb.ref('monagenda');
+            old.once('value', os => {
+              if (os.val()) ref.set(os.val());
+            });
+          }
+        });
+        ref.on('value', snap => {
+          const val = snap.val();
+          if (val) {
+            DB = {
+              tasks:     val.tasks     ? Object.values(val.tasks)     : [],
+              reminders: val.reminders ? Object.values(val.reminders) : [],
+              lastOpen:  val.lastOpen  || ''
+            };
+          } else {
+            DB = { tasks: [], reminders: [], lastOpen: '' };
+          }
+          _fbReady = true;
+          showSyncStatus('✅ Synchronisé');
+          doRollover();
+          renderWeekBar();
+          renderCurView();
+          scheduleNotifs();
+        });
+        _fbDb.ref('.info/connected').on('value', snap => {
+          showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
+        });
       } else {
         _currentUser = null;
-        showLogin();
+        document.getElementById('login-screen').classList.remove('hide');
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('user-avatar').style.display = 'none';
       }
     });
   } catch(e) {
@@ -934,109 +950,45 @@ function fbInit() {
   }
 }
 
-function showLogin() {
-  document.getElementById('login-screen').classList.remove('hide');
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('user-avatar').style.display = 'none';
-}
-
-function showApp(user) {
-  document.getElementById('login-screen').classList.add('hide');
-  document.getElementById('app').style.display = '';
-  const av = document.getElementById('user-avatar');
-  if (user.photoURL) { av.src = user.photoURL; av.style.display = 'block'; }
-  document.getElementById('um-name').textContent  = user.displayName || 'Utilisateur';
-  document.getElementById('um-email').textContent = user.email || '';
-}
-
-function startDbListener(uid) {
-  if (_fbListener) { _fbListener.off(); _fbListener = null; }
-  const ref = _fbDb.ref('users/' + uid);
-  _fbListener = ref;
-  // Migration: si Firebase vide et localStorage a des données → migre
-  ref.once('value', snap => {
-    if (!snap.val()) {
-      try {
-        const local = localStorage.getItem('ma3');
-        if (local) {
-          const ld = JSON.parse(local);
-          if (ld.tasks && ld.tasks.length > 0) {
-            ref.set({ lastOpen: ld.lastOpen||'', tasks: arr2obj(ld.tasks), reminders: arr2obj(ld.reminders||[]) });
-          }
-        }
-      } catch(e) {}
-    }
-  });
-  ref.on('value', snap => {
-    const val = snap.val();
-    if (val) {
-      DB = {
-        tasks:     val.tasks     ? Object.values(val.tasks)     : [],
-        reminders: val.reminders ? Object.values(val.reminders) : [],
-        lastOpen:  val.lastOpen  || ''
-      };
-    } else {
-      DB = { tasks: [], reminders: [], lastOpen: '' };
-    }
-    _fbReady = true;
-    showSyncStatus('✅ Synchronisé');
-    doRollover();
-    renderWeekBar();
-    renderCurView();
-    scheduleNotifs();
-  });
-  _fbDb.ref('.info/connected').on('value', snap => {
-    showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
-  });
-}
-
 function loginGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.addScope('email');
-  provider.addScope('profile');
-  _fbAuth.signInWithPopup(provider)
-    .then(result => {
-      _currentUser = result.user;
-      showApp(result.user);
-      startDbListener(result.user.uid);
-    })
-    .catch(e => {
-      console.warn('Auth error:', e.code);
-      const el = document.getElementById('login-err');
-      if (el) { el.textContent = 'Erreur : ' + e.code; el.style.display = 'block'; }
-    });
+  const p = new firebase.auth.GoogleAuthProvider();
+  _fbAuth.signInWithPopup(p).catch(e => { console.warn(e.code); });
 }
 
-function logout() {
+function doLogout() {
   if (_fbListener) { _fbListener.off(); _fbListener = null; }
   _fbAuth.signOut();
-  toggleUserMenu();
+  document.getElementById('user-menu').classList.remove('on');
 }
 
-function toggleUserMenu() {
+function toggleUM() {
   document.getElementById('user-menu').classList.toggle('on');
 }
-
 document.addEventListener('click', e => {
-  const menu = document.getElementById('user-menu');
-  const av   = document.getElementById('user-avatar');
-  if (menu && !menu.contains(e.target) && e.target !== av) menu.classList.remove('on');
+  const m = document.getElementById('user-menu');
+  const a = document.getElementById('user-avatar');
+  if (m && !m.contains(e.target) && e.target !== a) m.classList.remove('on');
 });
 
-function dbLoad() { if (!_fbReady) dbLoadLocal(); }
+function dbLoad() {
+  // Appelé au démarrage — Firebase s'occupe du reste via listener
+  if (!_fbReady) dbLoadLocal();
+}
+
 function dbLoadLocal() {
   try { const r = localStorage.getItem('ma3'); if (r) DB = JSON.parse(r); } catch(e) {}
 }
+
 function dbSave() {
   try { localStorage.setItem('ma3', JSON.stringify(DB)); } catch(e) {}
   if (!_fbDb || !_currentUser) return;
   try {
     _fbDb.ref('users/' + _currentUser.uid).set({
-      lastOpen:  DB.lastOpen,
+      lastOpen: DB.lastOpen,
       tasks:     arr2obj(DB.tasks),
       reminders: arr2obj(DB.reminders)
-    }).catch(e => console.warn('FB save:', e));
-  } catch(e) {}
+    }).catch(e => console.warn('FB save error:', e));
+  } catch(e) { console.warn('Firebase save error:', e); }
 }
 
 function arr2obj(arr) {
