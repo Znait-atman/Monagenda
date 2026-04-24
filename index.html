@@ -952,18 +952,39 @@ function showLogin() {
 function showApp(user) {
   document.getElementById('login-screen').classList.add('hide');
   document.getElementById('app').style.display = '';
-  // Avatar
   const av = document.getElementById('user-avatar');
   if (user.photoURL) { av.src = user.photoURL; av.style.display = 'block'; }
-  // User menu
   document.getElementById('user-name').textContent  = user.displayName || 'Utilisateur';
   document.getElementById('user-email').textContent = user.email || '';
 }
 
+function migrateLocalData(uid) {
+  // Si Firebase est vide ET qu'on a des données en local → on migre
+  try {
+    const local = localStorage.getItem('ma3');
+    if (!local) return;
+    const localDB = JSON.parse(local);
+    if (!localDB.tasks || localDB.tasks.length === 0) return;
+    _fbDb.ref('users/' + uid).once('value', snap => {
+      if (!snap.val()) {
+        // Firebase vide → on pousse les données locales
+        _fbDb.ref('users/' + uid).set({
+          lastOpen:  localDB.lastOpen || '',
+          tasks:     arr2obj(localDB.tasks || []),
+          reminders: arr2obj(localDB.reminders || [])
+        }).then(() => {
+          showSyncStatus('✅ Données migrées !');
+        });
+      }
+    });
+  } catch(e) { console.warn('migration error:', e); }
+}
+
 function startDbListener(uid) {
-  // Détache l'ancien listener si besoin
   if (_fbListener) _fbListener.off();
   _fbListener = _fbDb.ref('users/' + uid);
+  // Tente de migrer les données locales si Firebase est vide
+  migrateLocalData(uid);
   _fbListener.on('value', snap => {
     const val = snap.val();
     if (val) {
@@ -1346,8 +1367,9 @@ function renderAgenda() {
 
   let evHTML = '';
   items.forEach((tk, idx) => {
-    const sm = t2m(tk.startTime), em = t2m(tk.endTime);
-    if (em <= sm) return;
+    const sm = t2m(tk.startTime);
+    let em = t2m(tk.endTime);
+    if (em <= sm) em += 1440; // tâche qui passe minuit
     const top    = (sm / 60) * HH;
     const height = Math.max(((em - sm) / 60) * HH, 24);
     const col    = taskColor(tk);
@@ -1372,10 +1394,7 @@ function renderAgenda() {
     </div>`;
   }
 
-  tg.innerHTML = `<div class="tg-rows" style="position:relative">
-    ${rows}
-    <div class="ev-layer">${evHTML}${nowHTML}</div>
-  </div>`;
+  tg.innerHTML = '<div style="position:relative">' + rows + '<div style="position:absolute;top:0;left:48px;right:0;bottom:0;pointer-events:none">' + evHTML + nowHTML + '</div></div>';
 
   // Scroll to 7h or current hour
   const scrollHour = selDate === today() ? Math.max(0, new Date().getHours() - 1) : 7;
