@@ -592,51 +592,45 @@ select option { background: var(--s2); }
   font-family: 'Inter', sans-serif; font-weight: 700;
   font-size: 11px; color: #fff;
 }
-/* Login screen */
+
+/* ── LOGIN SCREEN ── */
 .login-screen {
   position: fixed; inset: 0; background: var(--bg);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  z-index: 999; padding: 30px;
+  z-index: 9999; padding: 30px;
 }
 .login-screen.hide { display: none; }
-.login-logo { font-size: 52px; margin-bottom: 10px; }
-.login-title { font-size: 26px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: -0.5px; }
-.login-sub { font-size: 14px; color: var(--t2); margin-bottom: 40px; text-align: center; line-height: 1.5; }
+.login-logo { font-size: 56px; margin-bottom: 12px; }
+.login-title { font-size: 28px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+.login-sub { font-size: 14px; color: var(--t2); margin-bottom: 44px; text-align: center; line-height: 1.6; }
 .btn-google {
   display: flex; align-items: center; gap: 12px;
   background: #fff; border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 14px 24px;
+  border-radius: 14px; padding: 15px 28px;
   font-family: 'Inter', sans-serif; font-size: 15px;
   font-weight: 700; color: #3c4043; cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  transition: all 0.2s; width: 100%; max-width: 300px;
-  justify-content: center;
+  box-shadow: 0 2px 16px rgba(224,92,138,0.15);
+  width: 100%; max-width: 300px; justify-content: center;
+  transition: all 0.2s;
 }
 .btn-google:active { transform: scale(0.97); }
 .btn-google img { width: 20px; height: 20px; }
-.login-note { font-size: 11px; color: var(--t3); margin-top: 20px; text-align: center; }
-
-/* User avatar in header */
-.user-avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  object-fit: cover; cursor: pointer; border: 2px solid var(--border);
-}
+.login-note { font-size: 11px; color: var(--t3); margin-top: 20px; text-align: center; line-height: 1.5; }
+.login-err { display: none; margin-top: 14px; color: var(--red); font-size: 12px; text-align: center; background: rgba(248,81,73,0.1); padding: 10px 14px; border-radius: 8px; max-width: 300px; }
+/* User avatar */
+.user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--border); }
 .user-menu {
-  position: fixed; top: calc(50px + var(--safe-t)); right: 10px;
+  position: fixed; top: calc(52px + var(--safe-t)); right: 10px;
   background: var(--s1); border: 1px solid var(--border);
-  border-radius: 12px; padding: 8px; z-index: 200;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; min-width: 200px;
+  border-radius: 12px; padding: 8px; z-index: 500;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  display: none; min-width: 210px;
 }
 .user-menu.on { display: block; }
-.user-name { font-size: 13px; font-weight: 700; padding: 6px 10px; color: var(--text); }
-.user-email { font-size: 11px; color: var(--t2); padding: 0 10px 8px; border-bottom: 1px solid var(--border); }
-.btn-logout {
-  width: 100%; margin-top: 6px; padding: 10px;
-  background: rgba(248,81,73,0.1); border: none; border-radius: 8px;
-  color: var(--red); font-family: 'Inter', sans-serif;
-  font-size: 13px; font-weight: 700; cursor: pointer;
-}
+.um-name { font-size: 13px; font-weight: 700; padding: 6px 10px; color: var(--text); }
+.um-email { font-size: 11px; color: var(--t2); padding: 0 10px 8px; border-bottom: 1px solid var(--border); }
+.btn-logout { width: 100%; margin-top: 6px; padding: 10px; background: rgba(248,81,73,0.1); border: none; border-radius: 8px; color: var(--red); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -644,24 +638,22 @@ select option { background: var(--s2); }
 </head>
 
 <body>
-
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div class="login-screen" id="login-screen">
   <div class="login-logo">🌸</div>
   <div class="login-title">MonAgenda</div>
   <div class="login-sub">Ton agenda personnel,<br>synchronisé partout</div>
   <button class="btn-google" onclick="loginGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
     Continuer avec Google
   </button>
-  <div class="login-note">Tes données sont privées et sécurisées.<br>Personne d'autre ne peut voir ton agenda.</div>
-  <div id="login-err" style="display:none;margin-top:14px;color:#E74C3C;font-size:12px;text-align:center;background:rgba(231,76,60,0.1);padding:10px;border-radius:8px;max-width:300px"></div>
+  <div class="login-note">Tes données sont privées.<br>Personne d'autre ne voit ton agenda.</div>
+  <div class="login-err" id="login-err"></div>
 </div>
-
 <!-- USER MENU -->
 <div class="user-menu" id="user-menu">
-  <div class="user-name" id="user-name"></div>
-  <div class="user-email" id="user-email"></div>
+  <div class="um-name" id="um-name"></div>
+  <div class="um-email" id="um-email"></div>
   <button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button>
 </div>
 <div id="app">
@@ -682,9 +674,8 @@ select option { background: var(--s2); }
       <div class="hdr-clock">
         <div class="clock-time"><span id="cl-hm"></span><span class="clock-sec" id="cl-s"></span></div>
         <div class="clock-date" id="cl-date"></div>
+        <img id="user-avatar" class="user-avatar" src="" alt="" style="display:none;margin-top:2px" onclick="toggleUserMenu()">
         <div id="sync-status" style="font-size:10px;color:var(--t2);margin-top:2px;text-align:right;transition:opacity 1s">🔄 Connexion...</div>
-      </div>
-      <img id="user-avatar" class="user-avatar" src="" alt="" style="display:none" onclick="toggleUserMenu()">
       </div>
     </div>
     <!-- Week strip -->
@@ -867,9 +858,8 @@ function m2t(m) {
   return `${p2(Math.floor(m / 60))}:${p2(m % 60)}`;
 }
 function durStr(startMin, endMin) {
-  // Gère les tâches qui passent minuit (ex: 23h → 2h = 3h)
   let d = endMin - startMin;
-  if (d <= 0) d += 1440; // ajoute 24h si la fin est le lendemain
+  if (d <= 0) d += 1440;
   if (d <= 0) return '';
   const h = Math.floor(d / 60), m = d % 60;
   if (h && m) return `${h}h${m}min`;
@@ -918,7 +908,8 @@ const FIREBASE_CONFIG = {
 // DATABASE + AUTH
 // ═══════════════════════════════════════════════
 let DB = { tasks: [], reminders: [], lastOpen: '' };
-let _fbDb = null, _fbAuth = null, _fbReady = false, _currentUser = null, _fbListener = null;
+let _fbDb = null, _fbAuth = null, _fbReady = false;
+let _currentUser = null, _fbListener = null;
 
 function fbInit() {
   try {
@@ -954,38 +945,29 @@ function showApp(user) {
   document.getElementById('app').style.display = '';
   const av = document.getElementById('user-avatar');
   if (user.photoURL) { av.src = user.photoURL; av.style.display = 'block'; }
-  document.getElementById('user-name').textContent  = user.displayName || 'Utilisateur';
-  document.getElementById('user-email').textContent = user.email || '';
-}
-
-function migrateLocalData(uid) {
-  // Si Firebase est vide ET qu'on a des données en local → on migre
-  try {
-    const local = localStorage.getItem('ma3');
-    if (!local) return;
-    const localDB = JSON.parse(local);
-    if (!localDB.tasks || localDB.tasks.length === 0) return;
-    _fbDb.ref('users/' + uid).once('value', snap => {
-      if (!snap.val()) {
-        // Firebase vide → on pousse les données locales
-        _fbDb.ref('users/' + uid).set({
-          lastOpen:  localDB.lastOpen || '',
-          tasks:     arr2obj(localDB.tasks || []),
-          reminders: arr2obj(localDB.reminders || [])
-        }).then(() => {
-          showSyncStatus('✅ Données migrées !');
-        });
-      }
-    });
-  } catch(e) { console.warn('migration error:', e); }
+  document.getElementById('um-name').textContent  = user.displayName || 'Utilisateur';
+  document.getElementById('um-email').textContent = user.email || '';
 }
 
 function startDbListener(uid) {
-  if (_fbListener) _fbListener.off();
-  _fbListener = _fbDb.ref('users/' + uid);
-  // Tente de migrer les données locales si Firebase est vide
-  migrateLocalData(uid);
-  _fbListener.on('value', snap => {
+  if (_fbListener) { _fbListener.off(); _fbListener = null; }
+  const ref = _fbDb.ref('users/' + uid);
+  _fbListener = ref;
+  // Migration: si Firebase vide et localStorage a des données → migre
+  ref.once('value', snap => {
+    if (!snap.val()) {
+      try {
+        const local = localStorage.getItem('ma3');
+        if (local) {
+          const ld = JSON.parse(local);
+          if (ld.tasks && ld.tasks.length > 0) {
+            ref.set({ lastOpen: ld.lastOpen||'', tasks: arr2obj(ld.tasks), reminders: arr2obj(ld.reminders||[]) });
+          }
+        }
+      } catch(e) {}
+    }
+  });
+  ref.on('value', snap => {
     const val = snap.val();
     if (val) {
       DB = {
@@ -1020,8 +1002,8 @@ function loginGoogle() {
     })
     .catch(e => {
       console.warn('Auth error:', e.code);
-      const errEl = document.getElementById('login-err');
-      if (errEl) { errEl.textContent = 'Erreur : ' + e.code; errEl.style.display = 'block'; }
+      const el = document.getElementById('login-err');
+      if (el) { el.textContent = 'Erreur : ' + e.code; el.style.display = 'block'; }
     });
 }
 
@@ -1034,6 +1016,7 @@ function logout() {
 function toggleUserMenu() {
   document.getElementById('user-menu').classList.toggle('on');
 }
+
 document.addEventListener('click', e => {
   const menu = document.getElementById('user-menu');
   const av   = document.getElementById('user-avatar');
@@ -1064,9 +1047,10 @@ function arr2obj(arr) {
 }
 
 function showSyncStatus(msg) {
-  const el = document.getElementById('sync-status');
+  let el = document.getElementById('sync-status');
   if (!el) return;
-  el.textContent = msg; el.style.opacity = '1';
+  el.textContent = msg;
+  el.style.opacity = '1';
   clearTimeout(el._t);
   if (msg.includes('✅')) el._t = setTimeout(() => el.style.opacity = '0', 3000);
 }
@@ -1367,9 +1351,8 @@ function renderAgenda() {
 
   let evHTML = '';
   items.forEach((tk, idx) => {
-    const sm = t2m(tk.startTime);
-    let em = t2m(tk.endTime);
-    if (em <= sm) em += 1440; // tâche qui passe minuit
+    const sm = t2m(tk.startTime), em = t2m(tk.endTime);
+    if (em <= sm) return;
     const top    = (sm / 60) * HH;
     const height = Math.max(((em - sm) / 60) * HH, 24);
     const col    = taskColor(tk);
@@ -1394,7 +1377,10 @@ function renderAgenda() {
     </div>`;
   }
 
-  tg.innerHTML = '<div style="position:relative">' + rows + '<div style="position:absolute;top:0;left:48px;right:0;bottom:0;pointer-events:none">' + evHTML + nowHTML + '</div></div>';
+  tg.innerHTML = `<div class="tg-rows" style="position:relative">
+    ${rows}
+    <div class="ev-layer">${evHTML}${nowHTML}</div>
+  </div>`;
 
   // Scroll to 7h or current hour
   const scrollHour = selDate === today() ? Math.max(0, new Date().getHours() - 1) : 7;
@@ -1569,10 +1555,9 @@ function saveTask() {
   const title = document.getElementById('tf-title').value.trim();
   const s     = document.getElementById('tf-start').value;
   const e     = document.getElementById('tf-end').value;
+  const err   = document.getElementById('tf-err');
 
   if (!title) { showErr('tf-err', 'Le titre est obligatoire.'); return; }
-  // Autorise les tâches qui passent minuit (ex: 23h → 2h)
-  // On bloque seulement si start === end exactement
   if (s && e && s === e) { showErr('tf-err', "L'heure de début et de fin sont identiques."); return; }
 
   const data = {
@@ -1593,10 +1578,7 @@ function saveTask() {
     DB.tasks.push({ id: uid(), createdAt: Date.now(), ...data });
   }
 
-  dbSave();
-  closeM('m-task');
-  // Force render après un court délai pour laisser Firebase sync
-  setTimeout(() => renderCurView(), 300);
+  dbSave(); closeM('m-task'); renderCurView();
 }
 
 function deleteTask() {
