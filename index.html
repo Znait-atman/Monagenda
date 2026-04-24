@@ -867,7 +867,9 @@ function m2t(m) {
   return `${p2(Math.floor(m / 60))}:${p2(m % 60)}`;
 }
 function durStr(startMin, endMin) {
-  const d = endMin - startMin;
+  // Gère les tâches qui passent minuit (ex: 23h → 2h = 3h)
+  let d = endMin - startMin;
+  if (d <= 0) d += 1440; // ajoute 24h si la fin est le lendemain
   if (d <= 0) return '';
   const h = Math.floor(d / 60), m = d % 60;
   if (h && m) return `${h}h${m}min`;
@@ -1548,10 +1550,11 @@ function saveTask() {
   const title = document.getElementById('tf-title').value.trim();
   const s     = document.getElementById('tf-start').value;
   const e     = document.getElementById('tf-end').value;
-  const err   = document.getElementById('tf-err');
 
   if (!title) { showErr('tf-err', 'Le titre est obligatoire.'); return; }
-  if (s && e && t2m(e) <= t2m(s)) { showErr('tf-err', "L'heure de fin doit être après le début."); return; }
+  // Autorise les tâches qui passent minuit (ex: 23h → 2h)
+  // On bloque seulement si start === end exactement
+  if (s && e && s === e) { showErr('tf-err', "L'heure de début et de fin sont identiques."); return; }
 
   const data = {
     title,
@@ -1571,7 +1574,10 @@ function saveTask() {
     DB.tasks.push({ id: uid(), createdAt: Date.now(), ...data });
   }
 
-  dbSave(); closeM('m-task'); renderCurView();
+  dbSave();
+  closeM('m-task');
+  // Force render après un court délai pour laisser Firebase sync
+  setTimeout(() => renderCurView(), 300);
 }
 
 function deleteTask() {
