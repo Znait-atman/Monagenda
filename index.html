@@ -593,24 +593,20 @@ select option { background: var(--s2); }
   font-size: 11px; color: #fff;
 }
 
-/* LOGIN MODAL */
-#login-modal{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px}
-#login-modal.hidden{display:none}
-.lm-logo{font-size:52px;margin-bottom:12px}
-.lm-title{font-size:26px;font-weight:900;color:var(--text);margin-bottom:6px}
-.lm-sub{font-size:13px;color:var(--t2);margin-bottom:40px;text-align:center;line-height:1.6}
-.lm-btn{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px 26px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#3c4043;cursor:pointer;box-shadow:0 2px 14px rgba(224,92,138,0.15);width:100%;max-width:300px;justify-content:center}
-.lm-btn img{width:20px;height:20px}
-.lm-note{font-size:11px;color:var(--t3);margin-top:18px;text-align:center}
-.lm-err{display:none;margin-top:12px;color:var(--red);font-size:12px;text-align:center;background:rgba(231,76,60,0.1);padding:9px 14px;border-radius:8px;max-width:300px}
-/* User badge */
-#ubadge{display:none;align-items:center;gap:6px;cursor:pointer}
-#ubadge img{width:26px;height:26px;border-radius:50%;border:2px solid var(--border)}
-#umenu{position:fixed;top:calc(52px + var(--safe-t));right:10px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:8px;z-index:500;box-shadow:0 4px 20px rgba(0,0,0,0.1);display:none;min-width:200px}
-#umenu.on{display:block}
-.um-name{font-size:13px;font-weight:700;padding:6px 10px;color:var(--text)}
-.um-email{font-size:11px;color:var(--t2);padding:0 10px 8px;border-bottom:1px solid var(--border)}
-.um-signout{width:100%;margin-top:6px;padding:9px;background:rgba(231,76,60,0.1);border:none;border-radius:8px;color:var(--red);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+#login-wall{position:fixed;inset:0;background:#FFF0F5;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;font-family:'Inter',sans-serif}
+#login-wall h1{font-size:52px;margin-bottom:14px}
+#login-wall h2{font-size:26px;font-weight:900;color:#2D1B2E;margin-bottom:8px}
+#login-wall p{font-size:13px;color:#9B6B7A;margin-bottom:44px;text-align:center;line-height:1.6}
+#login-wall button{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #F4B8CA;border-radius:14px;padding:15px 28px;font-size:15px;font-weight:700;color:#3c4043;cursor:pointer;width:100%;max-width:300px;justify-content:center;box-shadow:0 2px 14px rgba(224,92,138,0.15)}
+#login-wall button img{width:20px;height:20px}
+#login-wall small{font-size:11px;color:#C9A0AC;margin-top:18px;text-align:center}
+#login-wall .err{display:none;margin-top:12px;color:#E74C3C;font-size:12px;background:rgba(231,76,60,0.1);padding:9px 14px;border-radius:8px;max-width:300px;text-align:center}
+#ubar{position:fixed;bottom:calc(58px + env(safe-area-inset-bottom));right:14px;z-index:60;display:none}
+#ubar img{width:30px;height:30px;border-radius:50%;border:2px solid #F4B8CA;cursor:pointer}
+#udrop{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:14px;background:#fff;border:1px solid #F4B8CA;border-radius:12px;padding:8px;z-index:200;display:none;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+#udrop b{display:block;font-size:13px;padding:6px 10px;color:#2D1B2E}
+#udrop span{display:block;font-size:11px;color:#9B6B7A;padding:0 10px 8px;border-bottom:1px solid #F4B8CA}
+#udrop button{width:100%;margin-top:6px;padding:9px;background:rgba(231,76,60,0.1);border:none;border-radius:8px;color:#E74C3C;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -819,8 +815,7 @@ function m2t(m) {
   return `${p2(Math.floor(m / 60))}:${p2(m % 60)}`;
 }
 function durStr(startMin, endMin) {
-  let d = endMin - startMin; if(d<=0) d+=1440;
-  if (d <= 0) return '';
+  let d = endMin - startMin; if(d<=0)d+=1440; if(d<=0)return '';
   const h = Math.floor(d / 60), m = d % 60;
   if (h && m) return `${h}h${m}min`;
   return h ? `${h}h` : `${m}min`;
@@ -871,61 +866,72 @@ let DB = { tasks: [], reminders: [], lastOpen: '' };
 let _fbDb = null;
 let _fbReady = false;
 
-let _fbAuth = null, _me = null, _userRef = null;
+let _auth=null,_user=null,_uref=null;
+
+function gLogin(){
+  _auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .catch(e=>{const el=document.getElementById('lerr');el.textContent='Erreur: '+e.code;el.style.display='block';});
+}
+function gLogout(){
+  if(_uref){_uref.off();_uref=null;}
+  _auth.signOut();
+  document.getElementById('udrop').style.display='none';
+}
+
+function startData(uid){
+  if(_uref)_uref.off();
+  const path='users/'+uid;
+  _uref=_fbDb.ref(path);
+  // migrate old shared data once
+  _uref.once('value',s=>{
+    if(!s.val()) _fbDb.ref('monagenda').once('value',o=>{if(o.val())_uref.set(o.val());});
+  });
+  _uref.on('value', snap => {
+    const val = snap.val();
+    if (val) {
+      DB = {
+        tasks:     val.tasks     ? Object.values(val.tasks)     : [],
+        reminders: val.reminders ? Object.values(val.reminders) : [],
+        lastOpen:  val.lastOpen  || ''
+      };
+    } else {
+      DB = { tasks: [], reminders: [], lastOpen: '' };
+    }
+    _fbReady = true;
+    showSyncStatus('✅ Synchronisé');
+    doRollover();
+    renderWeekBar();
+    renderCurView();
+    scheduleNotifs();
+  });
+  _fbDb.ref('.info/connected').on('value', snap => {
+    showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
+  });
+}
 
 function fbInit() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    _fbDb   = firebase.database();
-    _fbAuth = firebase.auth();
-    _fbAuth.useDeviceLanguage();
-
-    _fbAuth.onAuthStateChanged(user => {
-      if (user) {
-        _me = user;
-        // Hide login modal
-        document.getElementById('login-modal').classList.add('hidden');
-        // Show user badge
-        const ub = document.getElementById('ubadge');
-        ub.style.display = 'flex';
-        if (user.photoURL) document.getElementById('uimg').src = user.photoURL;
-        document.getElementById('uname').textContent  = user.displayName || '';
-        document.getElementById('uemail').textContent = user.email || '';
-        // Switch to per-user data, migrate old shared data if needed
-        if (_userRef) _userRef.off();
-        _userRef = _fbDb.ref('users/' + user.uid);
-        _userRef.once('value', snap => {
-          if (!snap.val()) {
-            _fbDb.ref('monagenda').once('value', old => {
-              if (old.val()) _userRef.set(old.val());
-            });
-          }
-        });
-        _userRef.on('value', snap => {
-          const val = snap.val();
-          if (val) {
-            DB = {
-              tasks:     val.tasks     ? Object.values(val.tasks)     : [],
-              reminders: val.reminders ? Object.values(val.reminders) : [],
-              lastOpen:  val.lastOpen  || ''
-            };
-          } else {
-            DB = { tasks: [], reminders: [], lastOpen: '' };
-          }
-          _fbReady = true;
-          showSyncStatus('✅ Synchronisé');
-          doRollover();
-          renderWeekBar();
-          renderCurView();
-          scheduleNotifs();
-        });
-        _fbDb.ref('.info/connected').on('value', snap => {
-          showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
-        });
+    _fbDb = firebase.database();
+    _auth = firebase.auth();
+    _auth.useDeviceLanguage();
+    _auth.onAuthStateChanged(user=>{
+      if(user){
+        _user=user;
+        // Hide login wall
+        document.getElementById('login-wall').style.display='none';
+        // Show user avatar
+        const ub=document.getElementById('ubar');
+        ub.style.display='block';
+        if(user.photoURL) document.getElementById('uphoto').src=user.photoURL;
+        document.getElementById('uname2').textContent=user.displayName||'';
+        document.getElementById('uemail2').textContent=user.email||'';
+        // Load data
+        startData(user.uid);
       } else {
-        _me = null;
-        document.getElementById('login-modal').classList.remove('hidden');
-        document.getElementById('ubadge').style.display = 'none';
+        _user=null;
+        document.getElementById('login-wall').style.display='flex';
+        document.getElementById('ubar').style.display='none';
       }
     });
   } catch(e) {
@@ -934,24 +940,6 @@ function fbInit() {
     doRollover(); renderWeekBar(); renderCurView();
   }
 }
-
-function doSignIn() {
-  const p = new firebase.auth.GoogleAuthProvider();
-  _fbAuth.signInWithPopup(p).catch(e => {
-    const el = document.getElementById('lm-err');
-    el.textContent = 'Erreur : ' + e.code; el.style.display = 'block';
-  });
-}
-function doSignOut() {
-  if (_userRef) { _userRef.off(); _userRef = null; }
-  _fbAuth.signOut();
-  document.getElementById('umenu').classList.remove('on');
-}
-function toggleMenu() { document.getElementById('umenu').classList.toggle('on'); }
-window.addEventListener('click', e => {
-  const m = document.getElementById('umenu'), b = document.getElementById('ubadge');
-  if (m && !m.contains(e.target) && !b.contains(e.target)) m.classList.remove('on');
-});
 
 function dbLoad() {
   // Appelé au démarrage — Firebase s'occupe du reste via listener
@@ -973,8 +961,8 @@ function dbSave() {
       tasks:     arr2obj(DB.tasks),
       reminders: arr2obj(DB.reminders)
     };
-    const path = _me ? 'users/' + _me.uid : 'monagenda';
-    _fbDb.ref(path).set(fbData).catch(e => console.warn('FB save error:', e));
+    const p=_user?'users/'+_user.uid:'monagenda';
+    _fbDb.ref(p).set(fbData).catch(e => console.warn('FB save error:', e));
   } catch(e) { console.warn('Firebase save error:', e); }
 }
 
@@ -1497,7 +1485,7 @@ function saveTask() {
   const err   = document.getElementById('tf-err');
 
   if (!title) { showErr('tf-err', 'Le titre est obligatoire.'); return; }
-  if (s && e && s === e) { showErr('tf-err', "Heure début = heure fin."); return; }
+  if (s && e && s === e) { showErr('tf-err', 'Heure début = heure fin.'); return; }
 
   const data = {
     title,
@@ -1616,27 +1604,24 @@ fbInit(); // Firebase démarre tout
 initNotif();
 </script>
 
-<!-- LOGIN MODAL -->
-<div id="login-modal">
-  <div class="lm-logo">🌸</div>
-  <div class="lm-title">MonAgenda</div>
-  <div class="lm-sub">Ton agenda personnel,<br>synchronisé partout</div>
-  <button class="lm-btn" onclick="doSignIn()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+<div id="login-wall">
+  <h1>🌸</h1>
+  <h2>MonAgenda</h2>
+  <p>Ton agenda personnel,<br>synchronisé partout</p>
+  <button onclick="gLogin()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
     Continuer avec Google
   </button>
-  <div class="lm-note">🔒 Tes données sont privées</div>
-  <div class="lm-err" id="lm-err"></div>
+  <small>🔒 Tes données sont privées</small>
+  <div class="err" id="lerr"></div>
 </div>
-<!-- USER MENU -->
-<div id="ubadge" onclick="toggleMenu()">
-  <img id="uimg" src="" alt="">
+<div id="ubar" onclick="document.getElementById('udrop').style.display=document.getElementById('udrop').style.display==='block'?'none':'block'">
+  <img id="uphoto" src="">
 </div>
-<div id="umenu">
-  <div class="um-name" id="uname"></div>
-  <div class="um-email" id="uemail"></div>
-  <button class="um-signout" onclick="doSignOut()">🚪 Se déconnecter</button>
+<div id="udrop">
+  <b id="uname2"></b>
+  <span id="uemail2"></span>
+  <button onclick="gLogout()">🚪 Se déconnecter</button>
 </div>
-
 </body>
 </html>
