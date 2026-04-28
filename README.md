@@ -27,7 +27,6 @@
 1. Ouvre l'URL dans **Chrome Android**
 2. Connecte-toi avec ton compte **Google**
 3. Appuie sur **⋮** (menu) → **"Ajouter à l'écran d'accueil"**
-4. Confirme → 🎉 MonAgenda apparaît dans ton tiroir d'applications !
 
 ---
 
