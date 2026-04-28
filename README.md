@@ -1,28 +1,28 @@
 # 🌸 MonAgenda — Ton agenda personnel
 
-## ✨ Fonctionnalités
+##  Fonctionnalités
 
-- ✅ **Tâches** — titre, description, priorité, heure début/fin, rappel
-- 🔄 **Rollover automatique** — les tâches non faites glissent au lendemain
-- 📅 **Agenda visuel** — vraie grille horaire avec tes créneaux positionnés
-- 📊 **Dashboard** — timeline intelligente, créneaux libres, progression du jour
-- 🔐 **Connexion Google** — tes données sont privées et synchronisées
-- 📱 **Multi-appareils** — PC, téléphone, tablette — tout synchronisé en temps réel
-- 📶 **Fonctionne hors ligne** — grâce au Service Worker
+-  **Tâches** — titre, description, priorité, heure début/fin, rappel
+-  **Rollover automatique** — les tâches non faites glissent au lendemain
+-  **Agenda visuel** — vraie grille horaire avec tes créneaux positionnés
+-  **Dashboard** — timeline intelligente, créneaux libres, progression du jour
+-  **Connexion Google** — tes données sont privées et synchronisées
+-  **Multi-appareils** — PC, téléphone, tablette — tout synchronisé en temps réel
+-  **Fonctionne hors ligne** — grâce au Service Worker
 
 ---
 
-## 🌐 Accéder à l'application
+##  Accéder à l'application
 
 ### URL principale
-👉 **`https://znait-atman.github.io/Monagenda/`**
+ **`https://znait-atman.github.io/Monagenda/`**
 
 ### URL alternative (Firebase)
-👉 `https://monagenda-cdfdc.web.app`
+ `https://monagenda-cdfdc.web.app`
 
 ---
 
-## 📲 Installer comme une vraie app sur Android
+##  Installer comme une vraie app sur Android
 
 1. Ouvre l'URL dans **Chrome Android**
 2. Connecte-toi avec ton compte **Google**
@@ -31,7 +31,7 @@
 
 ---
 
-## 📁 Fichiers
+##  Fichiers
 
 ```
 Monagenda/
@@ -46,7 +46,7 @@ Monagenda/
 
 ---
 
-## 💡 Conseils d'utilisation
+## Utilisation
 
 - **Connexion** : utilise toujours le même compte Google pour retrouver tes données
 - **Rollover** : ouvre l'app chaque matin — les tâches non faites se reportent automatiquement
