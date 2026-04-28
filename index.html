@@ -593,18 +593,17 @@ select option { background: var(--s2); }
   font-size: 11px; color: #fff;
 }
 
-#login-wall{position:fixed;inset:0;background:#FFF0F5;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;font-family:'Inter',sans-serif}
-#login-wall h1{font-size:52px;margin-bottom:14px}
-#login-wall h2{font-size:26px;font-weight:900;color:#2D1B2E;margin-bottom:8px}
-#login-wall p{font-size:13px;color:#9B6B7A;margin-bottom:44px;text-align:center;line-height:1.6}
-#login-wall button{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #F4B8CA;border-radius:14px;padding:15px 28px;font-size:15px;font-weight:700;color:#3c4043;cursor:pointer;width:100%;max-width:300px;justify-content:center;box-shadow:0 2px 14px rgba(224,92,138,0.15)}
-#login-wall button img{width:20px;height:20px}
-#login-wall small{font-size:11px;color:#C9A0AC;margin-top:18px;text-align:center}
-#login-wall .err{display:none;margin-top:12px;color:#E74C3C;font-size:12px;background:rgba(231,76,60,0.1);padding:9px 14px;border-radius:8px;max-width:300px;text-align:center}
-#ubar{position:fixed;bottom:calc(58px + env(safe-area-inset-bottom));right:14px;z-index:60;display:none}
-#ubar img{width:30px;height:30px;border-radius:50%;border:2px solid #F4B8CA;cursor:pointer}
-#udrop{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:14px;background:#fff;border:1px solid #F4B8CA;border-radius:12px;padding:8px;z-index:200;display:none;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-#udrop b{display:block;font-size:13px;padding:6px 10px;color:#2D1B2E}
+#lwall{position:fixed;inset:0;background:#FFF0F5;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;font-family:'Inter',sans-serif}
+#lwall h1{font-size:52px;margin-bottom:12px}
+#lwall h2{font-size:26px;font-weight:900;color:#2D1B2E;margin-bottom:8px}
+#lwall p{font-size:13px;color:#9B6B7A;margin-bottom:42px;text-align:center;line-height:1.6}
+#lwall button{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #F4B8CA;border-radius:14px;padding:15px 26px;font-size:15px;font-weight:700;color:#3c4043;cursor:pointer;width:100%;max-width:300px;justify-content:center;box-shadow:0 2px 14px rgba(224,92,138,0.15);font-family:'Inter',sans-serif}
+#lwall button img{width:20px;height:20px}
+#lwall small{font-size:11px;color:#C9A0AC;margin-top:18px;text-align:center}
+#uav{position:fixed;top:calc(10px + env(safe-area-inset-top));right:14px;z-index:100;display:none;cursor:pointer}
+#uav img{width:28px;height:28px;border-radius:50%;border:2px solid #F4B8CA}
+#udrop{position:fixed;top:calc(46px + env(safe-area-inset-top));right:14px;background:#fff;border:1px solid #F4B8CA;border-radius:12px;padding:8px;z-index:200;display:none;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.1);font-family:'Inter',sans-serif}
+#udrop b{display:block;font-size:13px;font-weight:700;padding:6px 10px;color:#2D1B2E}
 #udrop span{display:block;font-size:11px;color:#9B6B7A;padding:0 10px 8px;border-bottom:1px solid #F4B8CA}
 #udrop button{width:100%;margin-top:6px;padding:9px;background:rgba(231,76,60,0.1);border:none;border-radius:8px;color:#E74C3C;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 </style>
@@ -866,49 +865,10 @@ let DB = { tasks: [], reminders: [], lastOpen: '' };
 let _fbDb = null;
 let _fbReady = false;
 
-let _auth=null,_user=null,_uref=null;
-
-function gLogin(){
-  _auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    .catch(e=>{const el=document.getElementById('lerr');el.textContent='Erreur: '+e.code;el.style.display='block';});
-}
-function gLogout(){
-  if(_uref){_uref.off();_uref=null;}
-  _auth.signOut();
-  document.getElementById('udrop').style.display='none';
-}
-
-function startData(uid){
-  if(_uref)_uref.off();
-  const path='users/'+uid;
-  _uref=_fbDb.ref(path);
-  // migrate old shared data once
-  _uref.once('value',s=>{
-    if(!s.val()) _fbDb.ref('monagenda').once('value',o=>{if(o.val())_uref.set(o.val());});
-  });
-  _uref.on('value', snap => {
-    const val = snap.val();
-    if (val) {
-      DB = {
-        tasks:     val.tasks     ? Object.values(val.tasks)     : [],
-        reminders: val.reminders ? Object.values(val.reminders) : [],
-        lastOpen:  val.lastOpen  || ''
-      };
-    } else {
-      DB = { tasks: [], reminders: [], lastOpen: '' };
-    }
-    _fbReady = true;
-    showSyncStatus('✅ Synchronisé');
-    doRollover();
-    renderWeekBar();
-    renderCurView();
-    scheduleNotifs();
-  });
-  _fbDb.ref('.info/connected').on('value', snap => {
-    showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
-  });
-}
-
+let _auth=null,_me=null,_uref=null;
+function gIn(){_auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert(e.code));}
+function gOut(){if(_uref){_uref.off();_uref=null;}_auth.signOut();document.getElementById('udrop').style.display='none';}
+window.addEventListener('click',e=>{const d=document.getElementById('udrop'),a=document.getElementById('uav');if(d&&!d.contains(e.target)&&!a.contains(e.target))d.style.display='none';});
 function fbInit() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
@@ -917,25 +877,45 @@ function fbInit() {
     _auth.useDeviceLanguage();
     _auth.onAuthStateChanged(user=>{
       if(user){
-        _user=user;
-        // Hide login wall
-        document.getElementById('login-wall').style.display='none';
-        // Show user avatar
-        const ub=document.getElementById('ubar');
-        ub.style.display='block';
+        _me=user;
+        document.getElementById('lwall').style.display='none';
+        const av=document.getElementById('uav'); av.style.display='block';
         if(user.photoURL) document.getElementById('uphoto').src=user.photoURL;
-        document.getElementById('uname2').textContent=user.displayName||'';
-        document.getElementById('uemail2').textContent=user.email||'';
-        // Load data
-        startData(user.uid);
+        document.getElementById('uname').textContent=user.displayName||'';
+        document.getElementById('uemail').textContent=user.email||'';
+        if(_uref)_uref.off();
+        _uref=_fbDb.ref('users/'+user.uid);
+        _uref.once('value',s=>{if(!s.val())_fbDb.ref('monagenda').once('value',o=>{if(o.val())_uref.set(o.val());});});
+        _uref.on('value', snap => {
+      const val = snap.val();
+      if (val) {
+        DB = {
+          tasks:     val.tasks     ? Object.values(val.tasks)     : [],
+          reminders: val.reminders ? Object.values(val.reminders) : [],
+          lastOpen:  val.lastOpen  || ''
+        };
       } else {
-        _user=null;
-        document.getElementById('login-wall').style.display='flex';
-        document.getElementById('ubar').style.display='none';
+        DB = { tasks: [], reminders: [], lastOpen: '' };
+      }
+      _fbReady = true;
+      showSyncStatus('✅ Synchronisé');
+      doRollover();
+      renderWeekBar();
+      renderCurView();
+      scheduleNotifs();
+    });
+        _fbDb.ref('.info/connected').on('value', snap => {
+          showSyncStatus(snap.val() ? '🟢 En ligne' : '🔴 Hors ligne');
+        });
+      } else {
+        _me=null;
+        document.getElementById('lwall').style.display='flex';
+        document.getElementById('uav').style.display='none';
       }
     });
   } catch(e) {
     console.warn('Firebase init error:', e);
+    // Fallback localStorage si Firebase non configuré
     dbLoadLocal(); _fbReady = true;
     doRollover(); renderWeekBar(); renderCurView();
   }
@@ -961,8 +941,7 @@ function dbSave() {
       tasks:     arr2obj(DB.tasks),
       reminders: arr2obj(DB.reminders)
     };
-    const p=_user?'users/'+_user.uid:'monagenda';
-    _fbDb.ref(p).set(fbData).catch(e => console.warn('FB save error:', e));
+    (_me?_fbDb.ref('users/'+_me.uid):_fbDb.ref('monagenda')).set(fbData).catch(e=>console.warn('save:',e));
   } catch(e) { console.warn('Firebase save error:', e); }
 }
 
@@ -1603,25 +1582,14 @@ setInterval(() => { if (curView === 'today') renderToday(); updateBadge(); }, 60
 fbInit(); // Firebase démarre tout
 initNotif();
 </script>
-
-<div id="login-wall">
+<div id="lwall">
   <h1>🌸</h1>
   <h2>MonAgenda</h2>
   <p>Ton agenda personnel,<br>synchronisé partout</p>
-  <button onclick="gLogin()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    Continuer avec Google
-  </button>
+  <button onclick="gIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Continuer avec Google</button>
   <small>🔒 Tes données sont privées</small>
-  <div class="err" id="lerr"></div>
 </div>
-<div id="ubar" onclick="document.getElementById('udrop').style.display=document.getElementById('udrop').style.display==='block'?'none':'block'">
-  <img id="uphoto" src="">
-</div>
-<div id="udrop">
-  <b id="uname2"></b>
-  <span id="uemail2"></span>
-  <button onclick="gLogout()">🚪 Se déconnecter</button>
-</div>
+<div id="uav" onclick="document.getElementById('udrop').style.display=document.getElementById('udrop').style.display==='block'?'none':'block'"><img id="uphoto" src=""></div>
+<div id="udrop"><b id="uname"></b><span id="uemail"></span><button onclick="gOut()">🚪 Se déconnecter</button></div>
 </body>
 </html>
