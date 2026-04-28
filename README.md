@@ -1,48 +1,46 @@
-# ZeitPlan — Application de gestion du temps
+# 🌸 MonAgenda — Ton agenda personnel
 
 ## ✨ Fonctionnalités
 
-- ✅ **Tâches** — avec titre, description, priorité, heure de rappel
+- ✅ **Tâches** — titre, description, priorité, heure début/fin, rappel
 - 🔄 **Rollover automatique** — les tâches non faites glissent au lendemain
-- 📅 **Agenda hebdomadaire** — créneaux horaires à la seconde
-- 🔔 **Rappels** — avec notifications Android (quotidien / hebdomadaire / une fois)
-- 📊 **Dashboard** — progression du jour, créneau en cours, rappels du jour
+- 📅 **Agenda visuel** — vraie grille horaire avec tes créneaux positionnés
+- 📊 **Dashboard** — timeline intelligente, créneaux libres, progression du jour
+- 🔐 **Connexion Google** — tes données sont privées et synchronisées
+- 📱 **Multi-appareils** — PC, téléphone, tablette — tout synchronisé en temps réel
 - 📶 **Fonctionne hors ligne** — grâce au Service Worker
 
 ---
 
-## 📲 Installation sur Android (2 minutes)
+## 🌐 Accéder à l'application
 
-### Option A — GitHub Pages (recommandé, gratuit)
+### URL principale
+👉 **`https://znait-atman.github.io/Monagenda/`**
 
-1. Va sur [github.com](https://github.com) → crée un compte si tu n'en as pas
-2. Clique **New repository** → nomme-le `zeitplan` → **Public** → Create
-3. Clique **uploading an existing file** → glisse-dépose **TOUS LES FICHIERS** du dossier `zeitplan/`
-4. Clique **Commit changes**
-5. Va dans **Settings → Pages → Source : main** → Save
-6. Attends 1-2 minutes → l'URL sera : `https://TON-NOM.github.io/zeitplan/`
+### URL alternative (Firebase)
+👉 `https://monagenda-cdfdc.web.app`
 
-7. **Sur ton Android**, ouvre cette URL dans **Chrome**
-8. Chrome affiche une bannière "Ajouter à l'écran d'accueil" → confirme
-9. 🎉 ZeitPlan apparaît dans ton tiroir d'applications !
+---
 
-### Option B — Netlify Drop (encore plus simple)
+## 📲 Installer comme une vraie app sur Android
 
-1. Va sur [app.netlify.com/drop](https://app.netlify.com/drop)
-2. Glisse le **dossier `zeitplan/`** dans la zone
-3. Une URL unique est créée instantanément
-4. Ouvre-la sur Android dans Chrome → "Ajouter à l'écran d'accueil"
+1. Ouvre l'URL dans **Chrome Android**
+2. Connecte-toi avec ton compte **Google**
+3. Appuie sur **⋮** (menu) → **"Ajouter à l'écran d'accueil"**
+4. Confirme → 🎉 MonAgenda apparaît dans ton tiroir d'applications !
 
 ---
 
 ## 📁 Fichiers
 
 ```
-zeitplan/
+Monagenda/
 ├── index.html      ← Application principale
 ├── sw.js           ← Service Worker (offline + notifications)
 ├── manifest.json   ← Métadonnées PWA (icône, nom, couleurs)
 ├── icon.svg        ← Icône de l'application
+├── firebase.json   ← Configuration Firebase Hosting
+├── .firebaserc     ← Projet Firebase
 └── README.md       ← Ce fichier
 ```
 
@@ -50,6 +48,7 @@ zeitplan/
 
 ## 💡 Conseils d'utilisation
 
-- **Notifications** : accepte les notifications au premier lancement
+- **Connexion** : utilise toujours le même compte Google pour retrouver tes données
 - **Rollover** : ouvre l'app chaque matin — les tâches non faites se reportent automatiquement
-- **Secondes** : dans l'Agenda, le champ heure accepte HH:MM:SS pour une précision à la seconde
+- **Agenda** : tape sur un créneau horaire pour créer une tâche directement à cette heure
+- **Notifications** : accepte les notifications au premier lancement pour recevoir tes rappels
