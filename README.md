@@ -43,11 +43,3 @@ Monagenda/
 └── README.md       ← Ce fichier
 ```
 
----
-
-## Utilisation
-
-- **Connexion** : utilise toujours le même compte Google pour retrouver tes données
-- **Rollover** : ouvre l'app chaque matin — les tâches non faites se reportent automatiquement
-- **Agenda** : tape sur un créneau horaire pour créer une tâche directement à cette heure
-- **Notifications** : accepte les notifications au premier lancement pour recevoir tes rappels
